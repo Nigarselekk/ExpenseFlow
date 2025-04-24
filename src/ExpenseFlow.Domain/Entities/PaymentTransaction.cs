@@ -12,5 +12,7 @@ namespace ExpenseFlow.Domain.Entities;
         public decimal Amount { get; set; }
         public TransferType TransferType { get; set; }  = TransferType.EFT;
         public TransactionStatus Status { get; set; }
+
+        public Expense Expense { get; set; } = null!;
     }
 

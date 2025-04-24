@@ -16,6 +16,8 @@ namespace ExpenseFlow.Domain.Entities;
         public ExpenseStatus Status { get; set; } = ExpenseStatus.Pending;
         public string? RejectReason { get; set; }
 
+        public ICollection<ExpenseAttachment>? Attachments { get; set; }
+        public ICollection<PaymentTransaction>? Transactions { get; set; }
     
     }
 

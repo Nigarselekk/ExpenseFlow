@@ -10,4 +10,7 @@ namespace ExpenseFlow.Domain.Entities;
         public string Address { get; set; } = null!;
         public string City { get; set; } = null!;
     
+
+        public ICollection<AccountInfo> Accounts { get; set; } = new List<AccountInfo>();
+        public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
     }
