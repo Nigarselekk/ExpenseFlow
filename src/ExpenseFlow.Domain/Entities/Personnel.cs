@@ -2,6 +2,7 @@ namespace ExpenseFlow.Domain.Entities;
 
     public class Personnel
     {
+        public string ApplicationUserId { get; set; } = null!;
         public Guid Id { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
