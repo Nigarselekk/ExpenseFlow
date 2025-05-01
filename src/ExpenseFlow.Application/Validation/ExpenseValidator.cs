@@ -20,11 +20,9 @@ namespace ExpenseFlow.Application.Validation;
                 .NotEmpty().WithMessage("Description is required.")
                 .Length(5, 500).WithMessage("Description must be between 5 and 500 characters.");
 
-            RuleFor(x => x.City)
-                .MaximumLength(100).WithMessage("City cannot exceed 100 characters.");
-
-            RuleFor(x => x.Country)
-                .MaximumLength(100).WithMessage("Country cannot exceed 100 characters.");
+            RuleFor(x => x.Location)
+                .MaximumLength(250).WithMessage("Location cannot exceed 250 characters.")
+                .Matches(@"^[a-zA-Z0-9\s,.-]+$").WithMessage("Location can only contain letters, numbers, spaces, commas, periods, and hyphens.");
         }
     }
 

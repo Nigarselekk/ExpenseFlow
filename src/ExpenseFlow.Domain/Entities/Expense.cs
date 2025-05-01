@@ -6,7 +6,11 @@ namespace ExpenseFlow.Domain.Entities;
     {
         public Guid Id { get; set; }
         public Guid PersonnelId { get; set; }
+
+        public virtual Personnel Personnel { get; set; } 
         public int CategoryId { get; set; }
+
+        public virtual ExpenseCategory ExpenseCategory { get; set; }
 
         public decimal Amount { get; set; }
         public string Description { get; set; } = null!;
@@ -15,6 +19,9 @@ namespace ExpenseFlow.Domain.Entities;
 
         public ExpenseStatus Status { get; set; } = ExpenseStatus.Pending;
         public string? RejectReason { get; set; }
+
+
+    
 
         public ICollection<ExpenseAttachment>? Attachments { get; set; }
         public ICollection<PaymentTransaction>? Transactions { get; set; }

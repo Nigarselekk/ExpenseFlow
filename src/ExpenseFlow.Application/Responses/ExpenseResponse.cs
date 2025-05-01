@@ -13,8 +13,7 @@ namespace ExpenseFlow.Application.Responses;
         
         public decimal Amount { get; set; }
         public string Description { get; set; } = null!;
-        public string? City { get; set; }
-        public string? Country { get; set; }
+        public string? Location { get; set; }  
         public DateTime Date { get; set; }
         
         public ExpenseStatus Status { get; set; }
