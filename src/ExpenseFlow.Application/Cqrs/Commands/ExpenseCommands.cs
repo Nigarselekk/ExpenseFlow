@@ -7,9 +7,9 @@ namespace ExpenseFlow.Application.Cqrs.Commands;
     public record CreateExpenseCommand(ExpenseRequest Request)
         : IRequest<ExpenseResponse>;
 
+
     public record UpdateExpenseCommand(Guid Id, ExpenseRequest Request)
-        : IRequest;
+        : IRequest<Unit>;
 
     public record DeleteExpenseCommand(Guid Id)
-        : IRequest;
-
+        : IRequest<Unit>;

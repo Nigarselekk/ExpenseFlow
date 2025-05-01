@@ -1,7 +1,9 @@
 using ExpenseFlow.Infrastructure.DbContext;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using ExpenseFlow.Application.Validation;   
+using ExpenseFlow.Application.Validation;
+using ExpenseFlow.Application.Cqrs.Commands;
+using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +21,11 @@ builder.Services.AddDbContext<ExpenseFlowDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-var app = builder.Build();
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssemblyContaining<CreateExpenseCommand>());
 
+var app = builder.Build();
+app.MapControllers();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
