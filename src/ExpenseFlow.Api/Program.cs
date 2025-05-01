@@ -1,10 +1,10 @@
 using ExpenseFlow.Infrastructure.DbContext;
-using ExpenseFlow.Application.Mapping;       // your AutoMapper Profile sits here
-using ExpenseFlow.Application.Validation;    // your ExpenseValidator
-using ExpenseFlow.Application.Cqrs.Commands; // your CreateExpenseCommand
-using FluentValidation;                      // from FluentValidation
-using FluentValidation.AspNetCore;           // for AddFluentValidationAutoValidation
-using AutoMapper;                            // from AutoMapper.Extensions.Microsoft.DependencyInjection
+using ExpenseFlow.Application.Mapping;       
+using ExpenseFlow.Application.Validation;     
+using ExpenseFlow.Application.Cqrs.Commands;  
+using FluentValidation;                       
+using FluentValidation.AspNetCore;           
+using AutoMapper;                            
 using MediatR;                               
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +17,7 @@ builder.Services.AddSwaggerGen();
 
 //FluentValidation
 builder.Services
-    .AddFluentValidationAutoValidation()      // replaces the old AddFluentValidation(...)
+    .AddFluentValidationAutoValidation()       
     .AddFluentValidationClientsideAdapters();
 builder.Services
     .AddValidatorsFromAssemblyContaining<ExpenseValidator>();
@@ -30,12 +30,10 @@ builder.Services.AddAutoMapper(cfg =>
 });
 
 
-// 4) EF Core + Npgsql
 builder.Services.AddDbContext<ExpenseFlowDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 5) MediatR
-// — Install MediatR.Extensions.Microsoft.DependencyInjection
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblyContaining<CreateExpenseCommand>());
 
