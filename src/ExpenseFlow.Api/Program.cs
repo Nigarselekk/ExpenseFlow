@@ -1,10 +1,17 @@
-using ExpenseFlow.Infrastructure.EntityFramework;
+using ExpenseFlow.Infrastructure.DbContext;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using ExpenseFlow.Application.Validation;   
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddControllers()
+.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ExpenseValidator>());
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExpenseFlow.Infrastructure\ExpenseFlow.Infrastructure.csproj" />
+    <ProjectReference Include="..\ExpenseFlow.Application\ExpenseFlow.Application.csproj" />
   </ItemGroup>
 
 </Project>
