@@ -2,12 +2,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExpenseFlow.Domain\ExpenseFlow.Domain.csproj" />
+    <ProjectReference Include="..\ExpenseFlow.Infrastructure\ExpenseFlow.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
   </ItemGroup>
 
   <PropertyGroup>
