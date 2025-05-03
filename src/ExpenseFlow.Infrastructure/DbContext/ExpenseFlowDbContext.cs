@@ -35,9 +35,9 @@ public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser>
 
         // Personnel - Expense (1-n)
         builder.Entity<Expense>()
-            .HasOne<Personnel>()
-            .WithMany(p => p.Expenses)
-            .HasForeignKey(e => e.PersonnelId);
+        .HasOne<Personnel>()
+        .WithMany(p => p.Expenses)
+        .HasForeignKey(e => e.PersonnelId);
 
         // Expense - ExpenseCategory (n-1)
         builder.Entity<Expense>()
@@ -67,12 +67,7 @@ public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser>
             .HasIndex(a => a.IBAN)
             .IsUnique();
 
-
-
-
-
-
-
     }
 }
 
+// 
