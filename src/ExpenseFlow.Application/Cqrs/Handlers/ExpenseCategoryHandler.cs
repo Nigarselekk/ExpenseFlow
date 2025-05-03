@@ -55,7 +55,13 @@ public class ExpenseCategoryHandler :
 
         if (entity == null)
             throw new KeyNotFoundException($"ExpenseCategory not found.");
-
+               // Check if the ExpenseCategory has any expenses before deleting
+        var hasExpenses = await _context.Expenses
+            .AnyAsync(e => e.CategoryId == command.Id, cancellationToken);
+        if (hasExpenses)
+        {
+            throw new InvalidOperationException("Cannot delete ExpenseCategory with existing expenses.");
+        }
         _context.ExpenseCategories.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
         return Unit.Value;
