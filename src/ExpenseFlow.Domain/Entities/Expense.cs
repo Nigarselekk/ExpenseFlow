@@ -1,7 +1,11 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
+
 namespace ExpenseFlow.Domain.Entities;
 
     public enum ExpenseStatus { Pending, Approved, Rejected }
 
+//[Table("Expenses"), Schema("dbo")]
     public class Expense
     {
         public Guid Id { get; set; }
@@ -28,3 +32,18 @@ namespace ExpenseFlow.Domain.Entities;
     
     }
 
+
+/*
+    public class ExpenseConfiguration : IEntityTypeConfiguration<Expense>
+    {
+        public void Configure(EntityTypeBuilder<Expense> builder){
+            builder.ToTable("Expenses");
+            builder.HasKey(e => e.Id);
+            builder.Property(e => e.Id).ValueGeneratedOnAdd();
+            builder.Property(e => e.Description).IsRequired();
+            builder.Property(e => e.Amount).HasColumnType("decimal(18,2)");
+            builder.Property(e => e.Location).HasMaxLength(100);
+            builder.Property(e => e.RejectReason).HasMaxLength(200);
+        }
+    }
+*/

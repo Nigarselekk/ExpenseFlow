@@ -31,7 +31,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 
 builder.Services.AddDbContext<ExpenseFlowDbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSqlConnection")));
 
 // 5) MediatR
 builder.Services.AddMediatR(cfg =>
