@@ -12,6 +12,9 @@ namespace ExpenseFlow.Application.Responses;
         public string PhoneNumber { get; set; } = null!;
         public string Address { get; set; } = null!;
         public string City { get; set; } = null!;
-        public PersonnelRole Role { get; set; }
+
+    // public Expense expenses { get; set; } = null!;
+
+     //   public PersonnelRole Role { get; set; }
     }
 

@@ -1,41 +1,39 @@
 using ExpenseFlow.Infrastructure.DbContext;
-using ExpenseFlow.Application.Mapping;       
-using ExpenseFlow.Application.Validation;     
-using ExpenseFlow.Application.Cqrs.Commands;  
-using FluentValidation;                       
-using FluentValidation.AspNetCore;           
-using AutoMapper;                            
-using MediatR;                               
+using ExpenseFlow.Application.Mapping;
+using ExpenseFlow.Application.Validation;
+using ExpenseFlow.Application.Cqrs.Commands;
+using FluentValidation.AspNetCore;
+using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-//FluentValidation
 builder.Services
-    .AddFluentValidationAutoValidation()       
-    .AddFluentValidationClientsideAdapters();
-builder.Services
-    .AddValidatorsFromAssemblyContaining<ExpenseValidator>();
+    .AddControllers();
+    
 
+// FluentValidation
+builder.Services.AddFluentValidationAutoValidation();     
+builder.Services.AddFluentValidationClientsideAdapters();   
+builder.Services.AddValidatorsFromAssemblyContaining<ExpenseValidator>();
 
 // AutoMapper
-builder.Services.AddAutoMapper(cfg =>
-{
-    cfg.AddProfile<MapperProfile>();
-});
+builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
-
+// EF Core / PostgreSQL
 builder.Services.AddDbContext<ExpenseFlowDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSqlConnection")));
 
-// 5) MediatR
+// MediatR  
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblyContaining<CreateExpenseCommand>());
+
+// Swagger / OpenAPI
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 

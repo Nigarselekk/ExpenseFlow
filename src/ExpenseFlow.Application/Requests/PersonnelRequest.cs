@@ -4,7 +4,7 @@ namespace ExpenseFlow.Application.Requests;
 
     public class PersonnelRequest
     {
-        public string ApplicationUserId { get; set; } = null!;
+        
         public string FirstName          { get; set; } = null!;
         public string LastName           { get; set; } = null!;
         public string Email              { get; set; } = null!;
@@ -13,6 +13,6 @@ namespace ExpenseFlow.Application.Requests;
         public string City               { get; set; } = null!;
 
     
-        public PersonnelRole Role        { get; set; } = PersonnelRole.Personnel;
+     //   public PersonnelRole Role        { get; set; } = PersonnelRole.Personnel;
     }
 

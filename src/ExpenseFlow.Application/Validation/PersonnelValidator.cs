@@ -7,10 +7,7 @@ namespace ExpenseFlow.Application.Validation ;
     public class PersonnelValidator : AbstractValidator<PersonnelRequest>
     {
         public PersonnelValidator()
-        {
-            RuleFor(x => x.ApplicationUserId)
-                .NotEmpty().WithMessage("ApplicationUserId is required.");
-            
+        {   
             RuleFor(x => x.FirstName)
                 .NotEmpty().WithMessage("FirstName is required.")
                 .Length(2, 100).WithMessage("FirstName must be between 2 and 100 characters.");
