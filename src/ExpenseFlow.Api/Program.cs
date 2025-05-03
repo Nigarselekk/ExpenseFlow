@@ -14,10 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddControllers();
     
-
 // FluentValidation
-builder.Services.AddFluentValidationAutoValidation();     
-builder.Services.AddFluentValidationClientsideAdapters();   
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<ExpenseValidator>();
 
 // AutoMapper

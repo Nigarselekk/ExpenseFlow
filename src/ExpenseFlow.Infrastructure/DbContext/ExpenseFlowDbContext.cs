@@ -3,8 +3,8 @@ using ExpenseFlow.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ExpenseFlow.Infrastructure.DbContext
-{
+namespace ExpenseFlow.Infrastructure.DbContext;
+
     public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser>
     {
         public ExpenseFlowDbContext(DbContextOptions<ExpenseFlowDbContext> options)
@@ -64,4 +64,4 @@ namespace ExpenseFlow.Infrastructure.DbContext
                 .OnDelete(DeleteBehavior.Restrict);    
         }
     }
-}
+
