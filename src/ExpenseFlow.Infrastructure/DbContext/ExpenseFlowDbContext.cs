@@ -19,6 +19,8 @@ public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+
+        builder.ApplyConfigurationsFromAssembly(typeof(ExpenseFlowDbContext).Assembly);
         base.OnModelCreating(builder);
 
         // Personnel - ApplicationUser (1-1)
