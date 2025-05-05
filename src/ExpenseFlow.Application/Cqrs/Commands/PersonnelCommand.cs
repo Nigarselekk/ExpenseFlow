@@ -4,7 +4,7 @@ using ExpenseFlow.Application.Requests;
 
 namespace ExpenseFlow.Application.Cqrs.Commands;
 
-    public record CreatePersonnelCommand(PersonnelRequest Request)
+    public record CreatePersonnelCommand(string ApplicationUserId, PersonnelRequest Request)
         : IRequest<PersonnelResponse>;
 
     public record UpdatePersonnelCommand(Guid Id, PersonnelRequest Request) : IRequest<Unit>;

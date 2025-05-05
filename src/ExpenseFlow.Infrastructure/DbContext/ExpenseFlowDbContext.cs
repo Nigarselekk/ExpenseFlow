@@ -1,11 +1,12 @@
 using ExpenseFlow.Domain.Entities;
 using ExpenseFlow.Infrastructure.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ExpenseFlow.Infrastructure.DbContext;
 
-public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser>
+public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
 {
     public ExpenseFlowDbContext(DbContextOptions<ExpenseFlowDbContext> options)
         : base(options) { }
@@ -37,7 +38,7 @@ public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser>
 
         // Personnel - Expense (1-n)
         builder.Entity<Expense>()
-        .HasOne<Personnel>()
+        .HasOne(e => e.Personnel)
         .WithMany(p => p.Expenses)
         .HasForeignKey(e => e.PersonnelId);
 
@@ -55,9 +56,9 @@ public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser>
 
         // Expense - PaymentTransaction (1-n)
         builder.Entity<PaymentTransaction>()
-            .HasOne<Expense>()
-            .WithMany(e => e.Transactions)
-            .HasForeignKey(t => t.ExpenseId);
+        .HasOne(t => t.Expense)
+        .WithMany(e => e.Transactions)
+        .HasForeignKey(t => t.ExpenseId);
 
         builder.Entity<PaymentTransaction>()
         .HasOne(pt => pt.AccountInfo)

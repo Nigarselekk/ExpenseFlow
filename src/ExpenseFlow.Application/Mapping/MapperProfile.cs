@@ -13,7 +13,7 @@ public class MapperProfile : Profile
                 CreateMap<ExpenseRequest, Expense>();
                 CreateMap<Expense, ExpenseResponse>()
                     .ForMember(e => e.PersonnelName,
-                            e => e.MapFrom(p=> $"{p.Personnel.FirstName} {p.Personnel.LastName}"))
+                            e => e.MapFrom(p => $"{p.Personnel.FirstName} {p.Personnel.LastName}"))
                     .ForMember(c => c.CategoryName,
                             c => c.MapFrom(c => c.ExpenseCategory.Name))
                     .ForMember(a => a.Attachments,
@@ -33,7 +33,12 @@ public class MapperProfile : Profile
                 CreateMap<PaymentTransactionRequest, PaymentTransaction>();
                 CreateMap<PaymentTransaction, PaymentTransactionResponse>();
 
-                //  Personnel
+                CreateMap<PersonnelRequest, Personnel>();
+
+                CreateMap<Personnel, PersonnelResponse>()
+                    .ForMember(dest => dest.ApplicationUserId,
+                               opt => opt.MapFrom(src => src.ApplicationUserId));
+
                 CreateMap<PersonnelRequest, Personnel>();
                 CreateMap<Personnel, PersonnelResponse>();
 

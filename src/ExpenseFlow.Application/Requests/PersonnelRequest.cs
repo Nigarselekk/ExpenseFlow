@@ -11,8 +11,8 @@ namespace ExpenseFlow.Application.Requests;
         public string PhoneNumber        { get; set; } = null!;
         public string Address            { get; set; } = null!;
         public string City               { get; set; } = null!;
-
+        public string Password     { get; set; } = null!;
+       // public string? ApplicationUserId { get; set; }
     
-     //   public PersonnelRole Role        { get; set; } = PersonnelRole.Personnel;
     }
 

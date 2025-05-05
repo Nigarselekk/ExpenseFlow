@@ -4,11 +4,13 @@ using ExpenseFlow.Application.Cqrs.Queries;
 using ExpenseFlow.Application.Cqrs.Commands;
 using ExpenseFlow.Application.Requests;
 using ExpenseFlow.Application.Responses;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExpenseFlow.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
     public class ExpenseCategoriesController : ControllerBase
     {
         private readonly IMediator _mediator;
