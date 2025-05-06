@@ -1,6 +1,6 @@
 namespace ExpenseFlow.Api.Controllers;
 
- using System.Security.Claims;
+using System.Security.Claims;
 using System.Text;
 using ExpenseFlow.Application.Requests;
 using ExpenseFlow.Infrastructure.Identity;
@@ -19,11 +19,11 @@ public class AuthController : ControllerBase
 
   public AuthController(UserManager<ApplicationUser> userManager,
                         SignInManager<ApplicationUser> signInManager,
-                        IConfiguration cfg)
+                        IConfiguration configuration)
   {
     _userManager = userManager;
     _signInManager = signInManager;
-    _config = cfg;
+    _config = configuration;
   }
 
   [HttpPost("login")]
@@ -46,27 +46,29 @@ public class AuthController : ControllerBase
     return Ok(new { token });
   }
 
-private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
-{
-  var jwt   = _config.GetSection("JwtSettings");
-  var key   = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
-  var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-  var expires = DateTime.UtcNow
-                    .AddMinutes(double.Parse(jwt["DurationInMinutes"]!));   
+  private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
+  {
+    var jwt = _config.GetSection("JwtSettings");
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]!));
+    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+    var expires = DateTime.UtcNow
+                      .AddMinutes(double.Parse(jwt["DurationInMinutes"]!));
 
-  var claims = new List<Claim> {
-    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-    new Claim(ClaimTypes.NameIdentifier, user.Id),
+    var claims = new List<Claim> {
+  new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
   };
-  claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
-  var token = new JwtSecurityToken(
-    issuer:             jwt["Issuer"],
-    audience:           jwt["Audience"],
-    claims:             claims,
-    expires:            expires,
-    signingCredentials: creds
-  );
-  return new JwtSecurityTokenHandler().WriteToken(token);
-}
+
+    claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+    var token = new JwtSecurityToken(
+      issuer: jwt["Issuer"],
+      audience: jwt["Audience"],
+      claims: claims,
+      expires: expires,
+      signingCredentials: creds
+    );
+    return new JwtSecurityTokenHandler().WriteToken(token);
+  }
 }

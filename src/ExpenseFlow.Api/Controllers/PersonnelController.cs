@@ -16,14 +16,14 @@ namespace ExpenseFlow.Api.Controllers
     public class PersonnelController : ControllerBase
     {
         private readonly IMediator _mediator;
-    private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-    public PersonnelController(IMediator mediator,
-                               UserManager<ApplicationUser> userManager)
-    {
-        _mediator    = mediator;
-        _userManager = userManager;
-    }
+        public PersonnelController(IMediator mediator,
+                                UserManager<ApplicationUser> userManager)
+        {
+            _mediator = mediator;
+            _userManager = userManager;
+        }
 
         [HttpGet]
         public Task<List<PersonnelResponse>> GetAll()
@@ -33,26 +33,26 @@ namespace ExpenseFlow.Api.Controllers
         public Task<PersonnelResponse> GetById(Guid id)
             => _mediator.Send(new GetPersonnelByIdQuery(id));
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] PersonnelRequest request)
-    {
-        
-        var user = new ApplicationUser {
-            UserName = request.Email,
-            Email    = request.Email,
-            FullName = $"{request.FirstName} {request.LastName}"
-        };
-        var createRes = await _userManager.CreateAsync(user, request.Password);
-        if (!createRes.Succeeded)
-            return BadRequest(createRes.Errors);
-        
-        await _userManager.AddToRoleAsync(user, "Personnel");
-        
-      var result = await _mediator.Send(new CreatePersonnelCommand(user.Id, request));
-    
-        return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-    }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] PersonnelRequest request)
+        {
 
+            var user = new ApplicationUser
+            {
+                UserName = request.Email,
+                Email = request.Email,
+                FullName = $"{request.FirstName} {request.LastName}"
+            };
+            var createRes = await _userManager.CreateAsync(user, request.Password);
+            if (!createRes.Succeeded)
+                return BadRequest(createRes.Errors);
+
+            await _userManager.AddToRoleAsync(user, "Personnel");
+
+            var result = await _mediator.Send(new CreatePersonnelCommand(user.Id, request));
+
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
 
         [HttpPut("{id:guid}")]
         public Task<Unit> Update(Guid id, [FromBody] PersonnelRequest request)

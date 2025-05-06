@@ -23,7 +23,6 @@ public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser, IdentityR
 
         builder.ApplyConfigurationsFromAssembly(typeof(ExpenseFlowDbContext).Assembly);
         base.OnModelCreating(builder);
-
         // Personnel - ApplicationUser (1-1)
         builder.Entity<Personnel>()
             .HasOne<ApplicationUser>()
@@ -42,11 +41,12 @@ public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser, IdentityR
         .WithMany(p => p.Expenses)
         .HasForeignKey(e => e.PersonnelId);
 
-        // Expense - ExpenseCategory (n-1)
+        // Expense – ExpenseCategory (n–1)
         builder.Entity<Expense>()
-            .HasOne<ExpenseCategory>()
+            .HasOne(e => e.ExpenseCategory)
             .WithMany(c => c.Expenses)
-            .HasForeignKey(e => e.CategoryId);
+            .HasForeignKey(e => e.CategoryId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Expense - ExpenseAttachment (1-n)
         builder.Entity<ExpenseAttachment>()
@@ -73,4 +73,3 @@ public class ExpenseFlowDbContext : IdentityDbContext<ApplicationUser, IdentityR
     }
 }
 
-// 

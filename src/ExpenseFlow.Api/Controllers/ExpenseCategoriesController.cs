@@ -10,7 +10,7 @@ namespace ExpenseFlow.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class ExpenseCategoriesController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -18,24 +18,27 @@ namespace ExpenseFlow.Api.Controllers
         public ExpenseCategoriesController(IMediator mediator)
             => _mediator = mediator;
 
-        
-        [HttpGet("GetAll")]
+
+        [HttpGet()]
+        [Authorize(Roles = "Admin,Personnel")]
         public async Task<ActionResult<List<ExpenseCategoryResponse>>> GetAll()
         {
             var list = await _mediator.Send(new GetAllExpenseCategoriesQuery());
             return Ok(list);
         }
 
-        
+
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin,Personnel")]
         public async Task<ActionResult<ExpenseCategoryResponse>> GetById(int id)
         {
             var expenseCategory = await _mediator.Send(new GetExpenseCategoryByIdQuery(id));
             return Ok(expenseCategory);
         }
 
-        
+
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ExpenseCategoryResponse>> Post([FromBody] ExpenseCategoryRequest expenseCategoryRequest)
         {
             if (expenseCategoryRequest == null)
@@ -51,19 +54,21 @@ namespace ExpenseFlow.Api.Controllers
                 return BadRequest("Expense category name must be between 2 and 100 characters.");
             }
 
-            var created = await _mediator.Send(new CreateExpenseCategoryCommand(expenseCategoryRequest));        
+            var created = await _mediator.Send(new CreateExpenseCategoryCommand(expenseCategoryRequest));
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
-    
+
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Put(int id, [FromBody] ExpenseCategoryRequest req)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Put(int id, [FromBody] ExpenseCategoryRequest request)
         {
-            await _mediator.Send(new UpdateExpenseCategoryCommand(id, req));
+            await _mediator.Send(new UpdateExpenseCategoryCommand(id, request));
             return NoContent();
         }
 
-    
+
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             await _mediator.Send(new DeleteExpenseCategoryCommand(id));

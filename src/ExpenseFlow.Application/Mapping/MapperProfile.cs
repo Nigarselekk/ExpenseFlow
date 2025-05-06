@@ -12,14 +12,15 @@ public class MapperProfile : Profile
                 // Expense
                 CreateMap<ExpenseRequest, Expense>();
                 CreateMap<Expense, ExpenseResponse>()
-                    .ForMember(e => e.PersonnelName,
-                            e => e.MapFrom(p => $"{p.Personnel.FirstName} {p.Personnel.LastName}"))
-                    .ForMember(c => c.CategoryName,
-                            c => c.MapFrom(c => c.ExpenseCategory.Name))
-                    .ForMember(a => a.Attachments,
-                            a => a.MapFrom(s => s.Attachments))
-                    .ForMember(t => t.Transactions,
-                            t => t.MapFrom(s => s.Transactions));
+                    .ForMember(dest => dest.PersonnelName,
+                        opt => opt.MapFrom(src => $"{src.Personnel.FirstName} {src.Personnel.LastName}"))
+                    .ForMember(dest => dest.CategoryName,
+                        opt => opt.MapFrom(src => src.ExpenseCategory.Name))
+                    .ForMember(dest => dest.Attachments,
+                        opt => opt.MapFrom(src => src.Attachments))
+                    .ForMember(dest => dest.Transactions,
+                        opt => opt.MapFrom(src => src.Transactions));
+
 
                 //Category 
                 CreateMap<ExpenseCategoryRequest, ExpenseCategory>();

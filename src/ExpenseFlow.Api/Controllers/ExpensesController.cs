@@ -1,13 +1,12 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using ExpenseFlow.Application.Cqrs.Commands;
-using ExpenseFlow.Application.Cqrs.Queries;
 using ExpenseFlow.Application.Requests;
 using ExpenseFlow.Application.Responses;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using ExpenseFlow.Application.Cqrs.Queries;
+
 
 namespace ExpenseFlow.Api.Controllers
 {
@@ -17,9 +16,7 @@ namespace ExpenseFlow.Api.Controllers
     public class ExpensesController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public ExpensesController(IMediator mediator)
-            => _mediator = mediator;
+        public ExpensesController(IMediator mediator) => _mediator = mediator;
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -37,16 +34,27 @@ namespace ExpenseFlow.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Personnel")]
-        public Task<ExpenseResponse> Create([FromBody] ExpenseRequest req)
-            => _mediator.Send(new CreateExpenseCommand(req));
+        public async Task<IActionResult> Create([FromBody] ExpenseRequest expenseRequest)
+        {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            Guid personnelId = Guid.Parse(userId);
+            expenseRequest.PersonnelId = personnelId;
+
+            var expense = await _mediator.Send(new CreateExpenseCommand(expenseRequest.PersonnelId, expenseRequest));
+            return CreatedAtAction(nameof(GetById), new { id = expense.Id }, expense);
+        }
 
         [HttpPut("{id:guid}")]
         [Authorize(Roles = "Personnel")]
-        public Task Put(Guid id, [FromBody] ExpenseRequest req)
-            => _mediator.Send(new UpdateExpenseCommand(id, req));
+        public Task Put(Guid id, [FromBody] ExpenseRequest expenseRequest)
+            => _mediator.Send(new UpdateExpenseCommand(id, expenseRequest));
 
         [HttpDelete("{id:guid}")]
-            [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public Task Delete(Guid id)
             => _mediator.Send(new DeleteExpenseCommand(id));
     }

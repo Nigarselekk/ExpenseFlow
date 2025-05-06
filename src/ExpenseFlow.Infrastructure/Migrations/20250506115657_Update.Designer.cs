@@ -3,6 +3,7 @@ using System;
 using ExpenseFlow.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ExpenseFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(ExpenseFlowDbContext))]
-    partial class ExpenseFlowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250506115657_Update")]
+    partial class Update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,6 +75,9 @@ namespace ExpenseFlow.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ExpenseCategoryId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Location")
                         .HasColumnType("text");
 
@@ -87,6 +93,8 @@ namespace ExpenseFlow.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("ExpenseCategoryId");
 
                     b.HasIndex("PersonnelId");
 
@@ -435,9 +443,15 @@ namespace ExpenseFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("ExpenseFlow.Domain.Entities.Expense", b =>
                 {
-                    b.HasOne("ExpenseFlow.Domain.Entities.ExpenseCategory", "ExpenseCategory")
+                    b.HasOne("ExpenseFlow.Domain.Entities.ExpenseCategory", null)
                         .WithMany("Expenses")
                         .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ExpenseFlow.Domain.Entities.ExpenseCategory", "ExpenseCategory")
+                        .WithMany()
+                        .HasForeignKey("ExpenseCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

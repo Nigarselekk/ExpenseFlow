@@ -19,84 +19,84 @@ namespace ExpenseFlow.Application.Cqrs.Handlers
         IRequestHandler<GetExpenseByIdQuery, ExpenseResponse>,
         IRequestHandler<GetExpensesByPersonnelQuery, List<ExpenseResponse>>
     {
-        private const string NotFoundMsg = "{0} with Id {1} not found";
+        private const string NotFound = "{0} with Id {1} not found";
         private readonly ExpenseFlowDbContext _context;
         private readonly IMapper _mapper;
 
         public ExpenseHandler(ExpenseFlowDbContext context, IMapper mapper)
         {
             _context = context;
-            _mapper  = mapper;
+            _mapper = mapper;
         }
 
-        // CREATE
-        public async Task<ExpenseResponse> Handle(CreateExpenseCommand command, CancellationToken ct)
+
+        public async Task<ExpenseResponse> Handle(CreateExpenseCommand command, CancellationToken cancellationToken)
         {
             await EnsureExistsAsync<Personnel>(
-                _context.Personnels, 
-                command.Request.PersonnelId, 
-                nameof(Personnel), 
-                ct);
+              _context.Personnels,
+              command.PersonnelId,
+              nameof(Personnel),
+              cancellationToken);
 
             await EnsureExistsAsync<ExpenseCategory>(
-                _context.ExpenseCategories, 
-                command.Request.CategoryId, 
-                nameof(ExpenseCategory), 
-                ct);
+              _context.ExpenseCategories,
+              command.Request.CategoryId,
+              nameof(ExpenseCategory),
+              cancellationToken);
 
             var entity = _mapper.Map<Expense>(command.Request);
+            entity.PersonnelId = command.PersonnelId;
             _context.Expenses.Add(entity);
-            await _context.SaveChangesAsync(ct);
+            await _context.SaveChangesAsync(cancellationToken);
 
-            // return the full DTO from the freshly‐saved record
             return await ExpensesQuery()
-                .Where(e => e.Id == entity.Id)
-                .ProjectTo<ExpenseResponse>(_mapper.ConfigurationProvider)
-                .SingleAsync(ct);
+              .Where(e => e.Id == entity.Id)
+              .ProjectTo<ExpenseResponse>(_mapper.ConfigurationProvider)
+              .SingleAsync(cancellationToken);
         }
 
-        // UPDATE
-        public async Task<Unit> Handle(UpdateExpenseCommand command, CancellationToken ct)
+
+        public async Task<Unit> Handle(UpdateExpenseCommand command, CancellationToken cancellationToken)
         {
-            var entity = await _context.Expenses.FindAsync(new object[]{command.Id}, ct)
-                         ?? throw new KeyNotFoundException(string.Format(NotFoundMsg, "Expense", command.Id));
+            var entity = await _context.Expenses.FindAsync(new object[] { command.Id }, cancellationToken)
+                         ?? throw new KeyNotFoundException(string.Format(NotFound, "Expense", command.Id));
 
             _mapper.Map(command.Request, entity);
-            await _context.SaveChangesAsync(ct);
+            await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }
 
-        // DELETE
-        public async Task<Unit> Handle(DeleteExpenseCommand command, CancellationToken ct)
+
+        public async Task<Unit> Handle(DeleteExpenseCommand command, CancellationToken cancellationToken)
         {
-            var entity = await _context.Expenses.FindAsync(new object[]{command.Id}, ct)
-                         ?? throw new KeyNotFoundException(string.Format(NotFoundMsg, "Expense", command.Id));
+            var entity = await _context.Expenses.FindAsync(new object[] { command.Id }, cancellationToken)
+                         ?? throw new KeyNotFoundException(string.Format(NotFound, "Expense", command.Id));
 
             _context.Expenses.Remove(entity);
-            await _context.SaveChangesAsync(ct);
+            await _context.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }
 
-        // GET ALL
-        public async Task<List<ExpenseResponse>> Handle(GetAllExpensesQuery req, CancellationToken ct) =>
-            await ExpensesQuery()
-                .ProjectTo<ExpenseResponse>(_mapper.ConfigurationProvider)
-                .ToListAsync(ct);
 
-        // GET BY ID
-        public async Task<ExpenseResponse> Handle(GetExpenseByIdQuery req, CancellationToken ct) =>
+        public async Task<List<ExpenseResponse>> Handle(GetAllExpensesQuery getAllExpensesQuery, CancellationToken cancellationToken) =>
             await ExpensesQuery()
-                .Where(e => e.Id == req.Id)
                 .ProjectTo<ExpenseResponse>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync(ct)
-                ?? throw new KeyNotFoundException(string.Format(NotFoundMsg, "Expense", req.Id));
+                .ToListAsync(cancellationToken);
 
-        // GET BY PERSONNEL
-        public async Task<List<ExpenseResponse>> Handle(GetExpensesByPersonnelQuery req, CancellationToken ct) =>
+
+        public async Task<ExpenseResponse> Handle(GetExpenseByIdQuery getExpenseByIdQuery, CancellationToken cancellationToken) =>
             await ExpensesQuery()
-                .Where(e => e.PersonnelId == req.PersonnelId)
+                .Where(e => e.Id == getExpenseByIdQuery.Id)
                 .ProjectTo<ExpenseResponse>(_mapper.ConfigurationProvider)
-                .ToListAsync(ct);
+                .SingleOrDefaultAsync(cancellationToken)
+                ?? throw new KeyNotFoundException(string.Format(NotFound, "Expense", getExpenseByIdQuery.Id));
+
+
+        public async Task<List<ExpenseResponse>> Handle(GetExpensesByPersonnelQuery getExpensesByPersonnelQuery, CancellationToken cancellationToken) =>
+            await ExpensesQuery()
+                .Where(e => e.PersonnelId == getExpensesByPersonnelQuery.PersonnelId)
+                .ProjectTo<ExpenseResponse>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
 
         // Shared query with all the includes
         private IQueryable<Expense> ExpensesQuery() =>
@@ -106,18 +106,17 @@ namespace ExpenseFlow.Application.Cqrs.Handlers
                 .Include(e => e.Attachments)
                 .Include(e => e.Transactions);
 
-        // DRY validation helper
+        // DRY validation helper method
         private static async Task EnsureExistsAsync<TEntity>(
             DbSet<TEntity> set,
             object id,
             string entityName,
-            CancellationToken ct
+            CancellationToken cancellationToken
         ) where TEntity : class
         {
-            var exists = await set.FindAsync(new object[]{ id }, ct) is not null;
+            var exists = await set.FindAsync(new object[] { id }, cancellationToken) is not null;
             if (!exists)
-                throw new KeyNotFoundException(string.Format(NotFoundMsg, entityName, id));
+                throw new KeyNotFoundException(string.Format(NotFound, entityName, id));
         }
     }
 }
-
