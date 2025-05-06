@@ -9,6 +9,9 @@ using ExpenseFlow.Application.Cqrs.Queries;
 
 namespace ExpenseFlow.Api.Controllers;
 
+    [ApiController]
+    [Route("api/[controller]")]
+    [Authorize]
 public class AccountInfosController : ControllerBase 
 {
         private readonly IMediator _mediator;
