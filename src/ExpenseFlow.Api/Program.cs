@@ -17,6 +17,7 @@ using System.Text;
 using ExpenseFlow.Application.Services;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -105,6 +106,9 @@ builder.Services.AddMediatR(cfg =>
 
 
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssemblyContaining<CreatePaymentTransactionCommand>());
+
 
 var app = builder.Build();
 
