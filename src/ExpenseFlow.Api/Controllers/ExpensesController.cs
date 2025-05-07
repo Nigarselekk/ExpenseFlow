@@ -57,5 +57,40 @@ namespace ExpenseFlow.Api.Controllers
         [Authorize(Roles = "Admin")]
         public Task Delete(Guid id)
             => _mediator.Send(new DeleteExpenseCommand(id));
+
+
+        [HttpPost("{id}/approve")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Approve(Guid id)
+        {
+            await _mediator.Send(new ApproveExpenseCommand(id));
+            return NoContent();
+        }
+
+        [HttpPost("{id}/reject")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Reject(Guid id, [FromBody] RejectDto dto)
+        {
+            await _mediator.Send(new RejectExpenseCommand(id, dto.Reason));
+            return NoContent();
+        }
+
+        public class RejectDto
+        {
+            public string Reason { get; set; } = null!;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
