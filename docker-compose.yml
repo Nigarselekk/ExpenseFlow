@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123.       
+      POSTGRES_DB: ExpenseFlowDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: src/ExpenseFlow.Api/Dockerfile
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+       
+      ConnectionStrings__PostgreSqlConnection: "User ID=postgres;Password=postgres123.;Host=db;Port=5432;Database=ExpenseFlowDb;Pooling=true; Trust Server Certificate=true;"
+    ports:
+      - "5146:80"
+    depends_on:
+      - db
+    command: >
+      sh -c "dotnet ef database update
+             --project src/ExpenseFlow.Infrastructure/ExpenseFlow.Infrastructure.csproj
+             --startup-project src/ExpenseFlow.Api/ExpenseFlow.Api.csproj
+             && dotnet ExpenseFlow.Api.dll"
+
+volumes:
+  db_data:
